@@ -90,12 +90,18 @@ if __name__ == '__main__':
             label_col = st.selectbox('Please select label',col_names)
         with col3:
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
+
+        with st.beta_expander('Advanced Parameters'):
+            var_smoothing = st.number_input('Smoothing (1e-9)',value=1)/1000000000
+                
+            st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html)')
+
         
         try:
             X = df[feature_cols]
             y = df[label_col]
             X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=test_size,random_state=0)
-            gnb = GaussianNB()
+            gnb = GaussianNB(var_smoothing=var_smoothing)
             gnb.fit(X_train, y_train)
             y_pred = gnb.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -144,9 +150,13 @@ if __name__ == '__main__':
                 st.sidebar.warning('Please upload a test dataset')
 
         except:
-            st.warning('Please select at least one feature and a suitable label')
+            st.warning('Please select at least one feature, a suitable label and appropriate advanced paramters')
 
     elif status == False:
         st.sidebar.warning('Please upload a training dataset')
 
-
+    st.sidebar.subheader('Sample Dataset')
+    if st.sidebar.button('Download sample dataset'):
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data2.csv'
+        csv = pd.read_csv(url)
+        st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
