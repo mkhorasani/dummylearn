@@ -45,7 +45,7 @@ def file_upload(name):
                 content = True
                 return content, uploaded_df
             except:
-                st.error('Unable to save file. Please ensure file is .csv or .xlsx format.')
+                st.error('Please ensure file is .csv or .xlsx format and/or reupload file')
                 return content, None
     else:
         return content, None

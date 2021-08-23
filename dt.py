@@ -46,7 +46,7 @@ def file_upload(name):
                 content = True
                 return content, uploaded_df
             except:
-                st.error('Unable to save file. Please ensure file is .csv or .xlsx format.')
+                st.error('Please ensure file is .csv or .xlsx format and/or reupload file')
                 return content, None
     else:
         return content, None
@@ -97,11 +97,45 @@ if __name__ == '__main__':
         with col3:
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
 
+        with st.beta_expander('Advanced Parameters'):
+            col2_1, col2_2 = st.beta_columns(2)
+            with col2_1:
+                criterion = st.selectbox('Criterion',['gini','entropy'])
+                max_depth = st.radio('Max depth',[None,'Custom'])
+                if max_depth == 'Custom':
+                    max_depth = st.number_input('Custom max depth',0,100,1,1)
+                min_samples_leaf = st.number_input('Min samples leaf',0,99,1,1)
+                max_features = st.selectbox('Max features',[None,'auto','sqrt','log2','Custom'])
+                if max_features == 'Custom':
+                    max_features = st.number_input('Custom max features',0.0,99.0,1.0,0.1)
+                max_leaf_nodes = st.radio('Max leaf nodes',[None,'Custom'])
+                if max_leaf_nodes == 'Custom':
+                    max_leaf_nodes = st.number_input('Custom max leaf nodes',2,99,2,1)
+                min_impurity_split = st.number_input('Min impurity split',0,99,0,1)
+            with col2_2:
+                splitter = st.selectbox('Splitter',['best','random'])
+                min_samples_split = st.number_input('Min samples split',2,99,2,1)
+                min_weight_fraction_leaf = st.number_input('Min weight fraction leaf',0.0,99.0,0.0,0.1)
+                random_state = st.radio('Random state',[None,'Custom'])
+                if random_state == 'Custom':
+                    random_state = st.number_input('Custom random state',0,99,1,1)
+                min_impurity_decrease = st.number_input('Min impurity decrease',0.0,99.0,0.0,0.1)
+                class_weight = st.radio('Class weight',[None,'balanced'])
+                ccp_alpha = st.number_input('Complexity parameter',0.0,99.0,0.0,0.1)
+                
+            st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)')
+
         try:
             X = df[feature_cols]
             y = df[label_col]
             X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=test_size,random_state=0)
-            clf = DecisionTreeClassifier()
+            clf = DecisionTreeClassifier(criterion=criterion, splitter=splitter, max_depth=max_depth,
+                                         min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf,
+                                         min_weight_fraction_leaf=min_weight_fraction_leaf,
+                                         max_features=max_features, random_state=random_state,
+                                         max_leaf_nodes=max_leaf_nodes, min_impurity_decrease=min_impurity_decrease,
+                                         min_impurity_split=min_impurity_split, class_weight=class_weight,
+                                         ccp_alpha=ccp_alpha)
             clf = clf.fit(X_train,y_train)
             y_pred = clf.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -109,10 +143,11 @@ if __name__ == '__main__':
             st.subheader('Confusion Matrix')
             confusion_matrix_plot(cnf_matrix,list(df[label_col].unique()))
 
-            try:
-                dt_viz(X_train,y_train,label_col,clf,feature_cols,list(df[label_col].unique()))
-            except:
-                pass
+            #Decision tree viz
+            #try:
+            #    dt_viz(X_train,y_train,label_col,clf,feature_cols,list(df[label_col].unique()))
+            #except:
+            #    pass
 
             accuracy = metrics.accuracy_score(y_test, y_pred)
             st.subheader('Metrics')
@@ -155,7 +190,13 @@ if __name__ == '__main__':
                 st.sidebar.warning('Please upload a test dataset')
 
         except:
-            st.warning('Please select at least one feature and a suitable label')
+            st.warning('Please select at least one feature, a suitable label and appropriate advanced paramters')
 
     elif status == False:
         st.sidebar.warning('Please upload a training dataset')
+
+    st.sidebar.subheader('Sample Dataset')
+    if st.sidebar.button('Download sample dataset'):
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data2.csv'
+        csv = pd.read_csv(url)
+        st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)

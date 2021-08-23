@@ -45,7 +45,7 @@ def file_upload(name):
                 content = True
                 return content, uploaded_df
             except:
-                st.error('Unable to save file. Please ensure file is .csv or .xlsx format.')
+                st.error('Please ensure file is .csv or .xlsx format and/or reupload file')
                 return content, None
     else:
         return content, None
@@ -91,11 +91,27 @@ if __name__ == '__main__':
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
             number_neighbors = st.number_input('Please enter number of neighbors',value=5,step=1)
 
+        with st.beta_expander('Advanced Parameters'):
+            col2_1, col2_2 = st.beta_columns(2)
+            with col2_1:
+                weights = st.selectbox('Weights',['uniform','distance'])
+                leaf_size = st.number_input('Min samples leaf',0,99,30,1)
+                metric = st.selectbox('Distance metric',['minkowski','euclidean','manhattan',
+                                                         'chebyshev','wminkowski','seuclidean',
+                                                         'mahalanobis'])
+            with col2_2:
+                algorithm = st.selectbox('Algorithm',['auto','ball_tree','kd_tree','brute'])
+                p = st.number_input('Power (minkowski)',1,99,2,1)
+                
+            st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)')
+
+
         try:
             X = df[feature_cols]
             y = df[label_col]
             X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=test_size,random_state=0)
-            knn = KNeighborsClassifier(n_neighbors=number_neighbors)
+            knn = KNeighborsClassifier(n_neighbors=number_neighbors,weights=weights,
+                                       algorithm=algorithm,leaf_size=leaf_size,p=p,metric=metric)
             knn.fit(X_train, y_train)
             y_pred = knn.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -144,7 +160,13 @@ if __name__ == '__main__':
                 st.sidebar.warning('Please upload a test dataset')
 
         except:
-            st.warning('Please select at least one feature, a suitable label and an appropriate number of neighbors')
+            st.warning('Please select at least one feature, a suitable label and appropriate paramters')
 
     elif status == False:
         st.sidebar.warning('Please upload a training dataset')
+
+    st.sidebar.subheader('Sample Dataset')
+    if st.sidebar.button('Download sample dataset'):
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data2.csv'
+        csv = pd.read_csv(url)
+        st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)

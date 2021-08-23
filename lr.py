@@ -45,7 +45,7 @@ def file_upload(name):
                 content = True
                 return content, uploaded_df
             except:
-                st.error('Unable to save file. Please ensure file is .csv or .xlsx format.')
+                st.error('Please ensure file is .csv or .xlsx format and/or reupload file')
                 return content, None
     else:
         return content, None
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         with st.beta_expander('Advanced Parameters'):
             col2_1, col2_2 = st.beta_columns(2)
             with col2_1:
-                penalty = st.selectbox('Penalty',['l1','l2','elasticnet','none'])
+                penalty = st.selectbox('Penalty',['l2','l1','elasticnet','none'])
                 tol = st.number_input('Tolerance (1e-4)',value=1)/10000
                 fit_intercept = st.radio('Intercept',[True,False])
                 class_weight = st.radio('Class weight',[None,'balanced'])
@@ -120,7 +120,11 @@ if __name__ == '__main__':
             X = df[feature_cols]
             y = df[label_col]
             X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=test_size,random_state=0)
-            logreg = LogisticRegression()
+            logreg = LogisticRegression(penalty=penalty, dual=dual, tol=tol, C=C,
+                                        fit_intercept=fit_intercept, intercept_scaling=intercept_scaling,
+                                        class_weight=class_weight, random_state=random_state, solver=solver,
+                                        max_iter=max_iter, multi_class=multi_class, verbose=verbose,
+                                        warm_start=warm_start, l1_ratio=l1_ratio)
             logreg.fit(X_train,y_train)
             y_pred = logreg.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -179,7 +183,14 @@ if __name__ == '__main__':
                 st.sidebar.warning('Please upload a test dataset')
 
         except:
-            st.warning('Please select at least one feature, a suitable binary label and appropriate paramters')
+            st.warning('Please select at least one feature, a suitable binary label and appropriate advanced paramters')
 
     elif status == False:
         st.sidebar.warning('Please upload a training dataset')
+
+    st.sidebar.subheader('Sample Dataset')
+    if st.sidebar.button('Download sample dataset'):
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data.csv'
+        csv = pd.read_csv(url)
+        st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
+
