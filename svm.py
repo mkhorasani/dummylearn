@@ -50,30 +50,10 @@ def file_upload(name):
     else:
         return content, None
 
-
-if __name__ == '__main__':
-
-    st.set_page_config(
-        layout="centered",
-        initial_sidebar_state="expanded",
-        page_title='DummyLearn.com',
-    )
-
-    hide_footer_style = """
-    <style>
-    .reportview-container .main footer {visibility: hidden;}
-    """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
-
-    hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    </style>
-    """
-    st.markdown(hide_menu_style, unsafe_allow_html=True)
+def svm_main():
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
-    st.sidebar.title('Support Vector Machine Classifer')
+    #st.sidebar.title('Support Vector Machine Classifer')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
@@ -91,11 +71,37 @@ if __name__ == '__main__':
         with col3:
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
 
+        with st.beta_expander('Advanced Parameters'):
+            col2_1, col2_2 = st.beta_columns(2)
+            with col2_1:
+                C = st.number_input('Regularization parameter',0.0,99.0,1.0,1.0)
+                degree = st.number_input('Degree',0,100,3,1)
+                coef0 = st.number_input('Coef0',0.0,99.0,0.0,1.0)
+                probability = st.radio('Probability',[False,True])
+                class_weight = st.radio('Class weight',[None,'balanced'])
+                max_iter = st.number_input('Maximum iterations',-1,100,-1,1)
+                break_ties = st.radio('Break ties',[False,True])
+            with col2_2:
+                kernel = st.selectbox('Kernel',['rbf','linear','poly','sigmoid','precomputed'])
+                gamma = st.selectbox('Gamma',['scale','auto'])
+                shrinking = st.radio('Shrinking',[True,False])
+                tol = st.number_input('Tolerance (1e-3)',value=1)/1000
+                verbose = st.radio('Verbose',[False,True])
+                decision_function_shape = st.selectbox('Decision function shape',['ovr','ovo'])
+                random_state = st.radio('Random state',[None,'Custom'])
+                if random_state == 'Custom':
+                    random_state = st.number_input('Custom random state',0,99,1,1)
+                
+            st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)')
+
         try:
             X = df[feature_cols]
             y = df[label_col]
             X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=test_size,random_state=0)
-            clf = svm.SVC(kernel='linear') 
+            clf = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, coef0=coef0,
+                          shrinking=shrinking, probability=probability, tol=tol, class_weight=class_weight,
+                          verbose=verbose, max_iter=max_iter, decision_function_shape=decision_function_shape,
+                          break_ties=break_ties, random_state=random_state) 
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -157,7 +163,13 @@ if __name__ == '__main__':
                 st.sidebar.warning('Please upload a test dataset')
 
         except:
-            st.warning('Please select at least one feature and a suitable binary label')
+            st.warning('Please select at least one feature, a suitable binary label and appropriate advanced paramters')
 
     elif status == False:
         st.sidebar.warning('Please upload a training dataset')
+
+    st.sidebar.subheader('Sample Dataset')
+    if st.sidebar.button('Download sample dataset'):
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data2.csv'
+        csv = pd.read_csv(url)
+        st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)

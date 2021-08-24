@@ -56,29 +56,10 @@ def dt_viz(X,y,label_name,model,feature_cols,class_names):
     viz = dtreeviz(model, X, y, target_name=label_name,feature_names=feature_cols, class_names=class_names)
     st.image(viz._repr_svg_(), use_column_width=True)
 
-if __name__ == '__main__':
-
-    st.set_page_config(
-        layout="centered",
-        initial_sidebar_state="expanded",
-        page_title='DummyLearn.com',
-    )
-
-    hide_footer_style = """
-    <style>
-    .reportview-container .main footer {visibility: hidden;}
-    """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
-
-    hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    </style>
-    """
-    st.markdown(hide_menu_style, unsafe_allow_html=True)
+def dt_main():
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
-    st.sidebar.title('Decision Tree Classifer')
+    #st.sidebar.title('Decision Tree Classifer')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
@@ -122,7 +103,7 @@ if __name__ == '__main__':
                 min_impurity_decrease = st.number_input('Min impurity decrease',0.0,99.0,0.0,0.1)
                 class_weight = st.radio('Class weight',[None,'balanced'])
                 ccp_alpha = st.number_input('Complexity parameter',0.0,99.0,0.0,0.1)
-                
+
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)')
 
         try:

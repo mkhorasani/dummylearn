@@ -13,7 +13,7 @@ def confusion_matrix_plot(data,labels):
     x = labels
     y = labels
     z_text = z
-    
+
     fig = ff.create_annotated_heatmap(z, x, y, annotation_text=z_text, text=z,hoverinfo='text',colorscale='Blackbody')
     fig.update_layout(font_family="IBM Plex Sans")
 
@@ -22,7 +22,7 @@ def confusion_matrix_plot(data,labels):
 def roc_plot(data):
     fig = px.line(data, x="False Positive", y="True Positive")#, title='ROC Curve')
     fig.update_layout(font_family="IBM Plex Sans")
-    
+
     st.write(fig)
 
 def download(df,filename): # Downloading DataFrame
@@ -50,30 +50,10 @@ def file_upload(name):
     else:
         return content, None
 
-
-if __name__ == '__main__':
-
-    st.set_page_config(
-        layout="centered",
-        initial_sidebar_state="expanded",
-        page_title='DummyLearn.com',
-    )
-
-    hide_footer_style = """
-    <style>
-    .reportview-container .main footer {visibility: hidden;}    
-    """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
-
-    hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    </style>
-    """
-    st.markdown(hide_menu_style, unsafe_allow_html=True)
+def nb_main():
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
-    st.sidebar.title('Naive Bayes Classifer')
+    #st.sidebar.title('Naive Bayes Classifer')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
@@ -93,10 +73,10 @@ if __name__ == '__main__':
 
         with st.beta_expander('Advanced Parameters'):
             var_smoothing = st.number_input('Smoothing (1e-9)',value=1)/1000000000
-                
+
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html)')
 
-        
+
         try:
             X = df[feature_cols]
             y = df[label_col]
@@ -125,7 +105,7 @@ if __name__ == '__main__':
                 st.info('Area Under Curve: **%s**' % (round(auc,3)))
             except:
                 pass
-                
+
             st.sidebar.subheader('Test Dataset')
             status_test, df_test = file_upload('Please upload a test dataset')
 
@@ -134,7 +114,7 @@ if __name__ == '__main__':
                     st.title('Testing')
                     X_test_test = df_test[feature_cols]
                     y_pred_test = gnb.predict(X_test_test)
-                    
+
                     X_pred = df_test.copy()
                     X_pred[label_col] = y_pred_test
                     X_pred = X_pred.sort_index()

@@ -50,30 +50,10 @@ def file_upload(name):
     else:
         return content, None
 
-
-if __name__ == '__main__':
-
-    st.set_page_config(
-        layout="centered",
-        initial_sidebar_state="expanded",
-        page_title='DummyLearn.com',
-    )
-
-    hide_footer_style = """
-    <style>
-    .reportview-container .main footer {visibility: hidden;}
-    """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
-
-    hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    </style>
-    """
-    st.markdown(hide_menu_style, unsafe_allow_html=True)
+def knn_main():
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
-    st.sidebar.title('K-Nearest Neighbors Classifer')
+    #st.sidebar.title('K-Nearest Neighbors Classifer')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
@@ -102,7 +82,7 @@ if __name__ == '__main__':
             with col2_2:
                 algorithm = st.selectbox('Algorithm',['auto','ball_tree','kd_tree','brute'])
                 p = st.number_input('Power (minkowski)',1,99,2,1)
-                
+
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)')
 
 

@@ -50,30 +50,10 @@ def file_upload(name):
     else:
         return content, None
 
-
-if __name__ == '__main__':
-
-    st.set_page_config(
-        layout="centered",
-        initial_sidebar_state="expanded",
-        page_title='DummyLearn.com',
-    )
-
-    hide_footer_style = """
-    <style>
-    .reportview-container .main footer {visibility: hidden;}
-    """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
-
-    hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    </style>
-    """
-    st.markdown(hide_menu_style, unsafe_allow_html=True)
+def lr_main():
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
-    st.sidebar.title('Logistic Regression Classifier')
+    #st.sidebar.title('Logistic Regression Classifier')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
@@ -113,7 +93,7 @@ if __name__ == '__main__':
                 l1_ratio = st.radio('L1 ratio',[None,'Custom'])
                 if l1_ratio == 'Custom':
                     l1_ratio = st.number_input('Custom l1 ratio',0.0,1.0,1.0,0.01)
-                
+
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)')
 
         try:
@@ -193,4 +173,3 @@ if __name__ == '__main__':
         url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data.csv'
         csv = pd.read_csv(url)
         st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
-
