@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import base64
-from dtreeviz.trees import dtreeviz
+#from dtreeviz.trees import dtreeviz
 
 def confusion_matrix_plot(data,labels):
     z = data.tolist()[::-1]
