@@ -214,6 +214,6 @@ def svm_main(engine):
 
     st.sidebar.subheader('Sample Dataset')
     if st.sidebar.button('Download sample dataset'):
-        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data2.csv'
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data.csv?token=AJIVK66LYHVWRTLAFYVSUWDBE2432'
         csv = pd.read_csv(url)
         st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
