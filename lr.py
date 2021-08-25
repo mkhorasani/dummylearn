@@ -8,11 +8,11 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import base64
 import psycopg2
-#from sqlalchemy import create_engine
+from sqlalchemy import create_engine
 from streamlit.hashing import _CodeHasher
 from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
-#from sqlalchemy import Table, Column, String, MetaData
+from sqlalchemy import Table, Column, String, MetaData
 from datetime import datetime
 import os
 
@@ -84,13 +84,11 @@ def lr_main():
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
-    #engine = create_engine('''postgres://aypucbrafyqczq:da4c68db377bf354ea19986448fd55d59b7c7cbb08aba696ed8c2bd293283174@ec2-54-211-160-34.compute-1.amazonaws.com:5432/df4hngkj04sb9t''')
-    DATABASE_URL = os.environ['DATABASE_URL']
-    st.write(DATABASE_URL)
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    st.write(conn)
-    engine = conn.cursor()
-    st.write(engine)
+    engine = create_engine('''postgres://jtslpiqkuneekd:5d0a8c1b83cee260efde77bbfb0fb41b13dfb0e4fde4443ee8be6e0bfa2ecee3@ec2-35-153-114-74.compute-1.amazonaws.com:5432/d9en3c9i44m7h9''')
+    #DATABASE_URL = os.environ['DATABASE_URL']
+    #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    #engine = conn.cursor()
+
     _, session_id = get_session()
 
     insert_row(session_id,engine)
