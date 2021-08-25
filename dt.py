@@ -9,11 +9,11 @@ import plotly.figure_factory as ff
 import base64
 #from dtreeviz.trees import dtreeviz
 import psycopg2
-from sqlalchemy import create_engine
+#from sqlalchemy import create_engine
 from streamlit.hashing import _CodeHasher
 from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
-from sqlalchemy import Table, Column, String, MetaData
+#from sqlalchemy import Table, Column, String, MetaData
 from datetime import datetime
 
 def insert_row(session_id,engine):

@@ -8,11 +8,11 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import base64
 import psycopg2
-from sqlalchemy import create_engine
+#from sqlalchemy import create_engine
 from streamlit.hashing import _CodeHasher
 from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
-from sqlalchemy import Table, Column, String, MetaData
+#from sqlalchemy import Table, Column, String, MetaData
 from datetime import datetime
 
 def insert_row(session_id,engine):
@@ -92,7 +92,7 @@ def lr_main():
 
     insert_row(session_id,engine)
     update_row('lr1',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)
-    
+
     if status == True:
         update_row('data1_rows',len(df),session_id,engine)
         update_row('lr2',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)

@@ -1,7 +1,7 @@
 import psycopg2
 from sqlalchemy import create_engine
 
-engine = create_engine('''postgres://aypucbrafyqczq:da4c68db377bf354ea19986448fd55d59b7c7cbb08aba696ed8c2bd293283174@ec2-54-211-160-34.compute-1.amazonaws.com:5432/df4hngkj04sb9t''')
+engine = create_engine('''postgres://jtslpiqkuneekd:5d0a8c1b83cee260efde77bbfb0fb41b13dfb0e4fde4443ee8be6e0bfa2ecee3@ec2-35-153-114-74.compute-1.amazonaws.com:5432/d9en3c9i44m7h9''')
 
 def create_table(engine):
     engine.execute("""CREATE TABLE IF NOT EXISTS session_state (session_id text PRIMARY KEY,lr1 text,lr2 text,lr3 text,lr4 text,
