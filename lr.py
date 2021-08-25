@@ -14,6 +14,7 @@ from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
 #from sqlalchemy import Table, Column, String, MetaData
 from datetime import datetime
+import os
 
 def insert_row(session_id,engine):
     if engine.execute("SELECT session_id FROM session_state WHERE session_id = '%s'" % (session_id)).fetchone() is None:
