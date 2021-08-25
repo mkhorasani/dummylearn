@@ -86,9 +86,11 @@ def lr_main():
 
     #engine = create_engine('''postgres://aypucbrafyqczq:da4c68db377bf354ea19986448fd55d59b7c7cbb08aba696ed8c2bd293283174@ec2-54-211-160-34.compute-1.amazonaws.com:5432/df4hngkj04sb9t''')
     DATABASE_URL = os.environ['DATABASE_URL']
+    st.write(DATABASE_URL)
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    st.write(conn)
     engine = conn.cursor()
-
+    st.write(engine)
     _, session_id = get_session()
 
     insert_row(session_id,engine)
