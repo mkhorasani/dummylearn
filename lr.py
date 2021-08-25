@@ -214,6 +214,6 @@ def lr_main(engine):
 
     st.sidebar.subheader('Sample Dataset')
     if st.sidebar.button('Download sample dataset'):
-        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn/main/Sample%20datasets/data.csv?token=AJIVK66LYHVWRTLAFYVSUWDBE2432'
+        url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn_datasets/main/data.csv'
         csv = pd.read_csv(url)
         st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
