@@ -83,14 +83,14 @@ def dt_viz(X,y,label_name,model,feature_cols,class_names):
     viz = dtreeviz(model, X, y, target_name=label_name,feature_names=feature_cols, class_names=class_names)
     st.image(viz._repr_svg_(), use_column_width=True)
 
-def dt_main():
+def dt_main(engine):
 
     #df = pd.read_csv('C:/Users/Mohammad Khorasani/Desktop/data.csv')
     #st.sidebar.title('Decision Tree Classifer')
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
-    engine = create_engine('''postgres://jtslpiqkuneekd:5d0a8c1b83cee260efde77bbfb0fb41b13dfb0e4fde4443ee8be6e0bfa2ecee3@ec2-35-153-114-74.compute-1.amazonaws.com:5432/d9en3c9i44m7h9''')
+    #engine = create_engine('''postgres://jtslpiqkuneekd:5d0a8c1b83cee260efde77bbfb0fb41b13dfb0e4fde4443ee8be6e0bfa2ecee3@ec2-35-153-114-74.compute-1.amazonaws.com:5432/d9en3c9i44m7h9''')
     #DATABASE_URL = os.environ['DATABASE_URL']
     #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     #engine = conn.cursor()

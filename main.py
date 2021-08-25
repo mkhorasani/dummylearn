@@ -1,6 +1,8 @@
 import streamlit as st
 from PIL import Image
 import os
+import psycopg2
+from sqlalchemy import create_engine
 
 from lr import lr_main
 from dt import dt_main
@@ -8,8 +10,8 @@ from knn import knn_main
 from nb import nb_main
 from svm import svm_main
 
-def main():
-    
+def main(engine):
+
     icon = Image.open('favicon.ico')
     st.set_page_config(
         layout="centered",
@@ -41,15 +43,16 @@ def main():
         'Naive Bayes Classifier': nb_main,
         'Support Vector Machine Classifier': svm_main
         }
-    
+
     ml_module_selection =  st.sidebar.selectbox('Select Classifier',['Logistic Regression Classifier',
                                                                   'Decision Tree Classifier',
                                                                   'K-Nearest Neighbors Classifier',
                                                                   'Naive Bayes Classifier',
                                                                   'Support Vector Machine Classifier'])
-    
-    
-    pages_ml_classifier[ml_module_selection]()
+
+
+    pages_ml_classifier[ml_module_selection](engine)
 
 if __name__ == '__main__':
-    main()
+    engine = create_engine('''postgres://jtslpiqkuneekd:5d0a8c1b83cee260efde77bbfb0fb41b13dfb0e4fde4443ee8be6e0bfa2ecee3@ec2-35-153-114-74.compute-1.amazonaws.com:5432/d9en3c9i44m7h9''')
+    main(engine)
