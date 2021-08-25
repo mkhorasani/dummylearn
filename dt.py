@@ -107,7 +107,7 @@ def dt_main():
 
         st.title('Training')
         st.subheader('Parameters')
-        col1, col2, col3 = st.beta_columns((3,3,2))
+        col1, col2, col3 = st.columns((3,3,2))
 
         with col1:
             feature_cols = st.multiselect('Please select features',col_names)
@@ -116,8 +116,8 @@ def dt_main():
         with col3:
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
 
-        with st.beta_expander('Advanced Parameters'):
-            col2_1, col2_2 = st.beta_columns(2)
+        with st.expander('Advanced Parameters'):
+            col2_1, col2_2 = st.columns(2)
             with col2_1:
                 criterion = st.selectbox('Criterion',['gini','entropy'])
                 max_depth = st.radio('Max depth',[None,'Custom'])

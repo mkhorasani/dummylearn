@@ -101,7 +101,7 @@ def svm_main():
 
         st.title('Training')
         st.subheader('Parameters')
-        col1, col2, col3 = st.beta_columns((3,3,2))
+        col1, col2, col3 = st.columns((3,3,2))
 
         with col1:
             feature_cols = st.multiselect('Please select features',col_names)
@@ -110,8 +110,8 @@ def svm_main():
         with col3:
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
 
-        with st.beta_expander('Advanced Parameters'):
-            col2_1, col2_2 = st.beta_columns(2)
+        with st.expander('Advanced Parameters'):
+            col2_1, col2_2 = st.columns(2)
             with col2_1:
                 C = st.number_input('Regularization parameter',0.0,99.0,1.0,1.0)
                 degree = st.number_input('Degree',0,100,3,1)
@@ -154,7 +154,7 @@ def svm_main():
             f1 = metrics.f1_score(y_test, y_pred)
 
             st.subheader('Metrics')
-            col2_1, col2_2, col2_3, col2_4 = st.beta_columns(4)
+            col2_1, col2_2, col2_3, col2_4 = st.columns(4)
 
             with col2_1:
                 st.info('Accuracy: **%s**' % (round(accuracy,3)))

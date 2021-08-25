@@ -101,7 +101,7 @@ def knn_main():
 
         st.title('Training')
         st.subheader('Parameters')
-        col1, col2 = st.beta_columns((2,1))
+        col1, col2 = st.columns((2,1))
 
         with col1:
             feature_cols = st.multiselect('Please select features',col_names)
@@ -110,8 +110,8 @@ def knn_main():
             test_size = st.number_input('Please enter test size',0.01,0.99,0.25,0.05)
             number_neighbors = st.number_input('Please enter number of neighbors',value=5,step=1)
 
-        with st.beta_expander('Advanced Parameters'):
-            col2_1, col2_2 = st.beta_columns(2)
+        with st.expander('Advanced Parameters'):
+            col2_1, col2_2 = st.columns(2)
             with col2_1:
                 weights = st.selectbox('Weights',['uniform','distance'])
                 leaf_size = st.number_input('Min samples leaf',0,99,30,1)
