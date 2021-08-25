@@ -7,9 +7,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import base64
-from dtreeviz.trees import dtreeviz
+#from dtreeviz.trees import dtreeviz
 import psycopg2
-#from sqlalchemy import create_engine
+from sqlalchemy import create_engine
 from streamlit.hashing import _CodeHasher
 from streamlit.report_thread import get_report_ctx
 from streamlit.server.server import Server
