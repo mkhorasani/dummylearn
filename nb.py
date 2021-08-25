@@ -7,6 +7,32 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import base64
+import psycopg2
+from sqlalchemy import create_engine
+from streamlit.hashing import _CodeHasher
+from streamlit.report_thread import get_report_ctx
+from streamlit.server.server import Server
+from sqlalchemy import Table, Column, String, MetaData
+from datetime import datetime
+
+def insert_row(session_id,engine):
+    if engine.execute("SELECT session_id FROM session_state WHERE session_id = '%s'" % (session_id)).fetchone() is None:
+            engine.execute("""INSERT INTO session_state (session_id) VALUES ('%s')""" % (session_id))
+
+def update_row(column,new_value,session_id,engine):
+    engine.execute("UPDATE session_state SET %s = '%s' WHERE session_id = '%s'" % (column,new_value,session_id))
+
+def get_session():
+    session_id = get_report_ctx().session_id
+    session_info = Server.get_current()._get_session_info(session_id)
+
+    if session_info is None:
+        raise RuntimeError("Couldn't get your Streamlit Session object.")
+
+    session_id = session_id.replace('-','_')
+    session_id = '_id_' + session_id
+
+    return session_info.session, session_id
 
 def confusion_matrix_plot(data,labels):
     z = data.tolist()[::-1]
@@ -57,7 +83,19 @@ def nb_main():
     st.sidebar.subheader('Training Dataset')
     status, df = file_upload('Please upload a training dataset')
 
+    #engine = create_engine('''postgres://aypucbrafyqczq:da4c68db377bf354ea19986448fd55d59b7c7cbb08aba696ed8c2bd293283174@ec2-54-211-160-34.compute-1.amazonaws.com:5432/df4hngkj04sb9t''')
+    DATABASE_URL = os.environ['DATABASE_URL']
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    engine = conn.cursor()
+
+    _, session_id = get_session()
+
+    insert_row(session_id,engine)
+    update_row('nb1',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)
+    
     if status == True:
+        update_row('data1_rows',len(df),session_id,engine)
+        update_row('nb2',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)
         col_names = list(df)
 
         st.title('Training')
@@ -75,7 +113,6 @@ def nb_main():
             var_smoothing = st.number_input('Smoothing (1e-9)',value=1)/1000000000
 
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html)')
-
 
         try:
             X = df[feature_cols]
@@ -108,10 +145,12 @@ def nb_main():
 
             st.sidebar.subheader('Test Dataset')
             status_test, df_test = file_upload('Please upload a test dataset')
+            update_row('nb3',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)
 
             if status_test == True:
                 try:
                     st.title('Testing')
+                    update_row('data2_rows',len(df_test),session_id,engine)
                     X_test_test = df_test[feature_cols]
                     y_pred_test = gnb.predict(X_test_test)
 
@@ -123,6 +162,7 @@ def nb_main():
                     st.write(X_pred)
                     #st.write(X_pred[label_col].value_counts())
                     st.markdown(download(X_pred,'DummyLearn.com - Naive Bayes Classifier - Predicted Labels'), unsafe_allow_html=True)
+                    update_row('nb4',datetime.now().strftime("%H:%M:%S %d/%m/%Y"),session_id,engine)
                 except:
                     st.warning('Please upload a test dataset with the same feature set as the training dataset')
 
@@ -133,6 +173,8 @@ def nb_main():
             st.warning('Please select at least one feature, a suitable label and appropriate advanced paramters')
 
     elif status == False:
+        st.title('Welcome 🌱')
+        st.subheader('Please use the left pane to upload your dataset')
         st.sidebar.warning('Please upload a training dataset')
 
     st.sidebar.subheader('Sample Dataset')
