@@ -77,7 +77,7 @@ def svm_main():
                 C = st.number_input('Regularization parameter',0.0,99.0,1.0,1.0)
                 degree = st.number_input('Degree',0,100,3,1)
                 coef0 = st.number_input('Coef0',0.0,99.0,0.0,1.0)
-                probability = st.radio('Probability',[False,True])
+                probability = st.radio('Probability',[True,False])
                 class_weight = st.radio('Class weight',[None,'balanced'])
                 max_iter = st.number_input('Maximum iterations',-1,100,-1,1)
                 break_ties = st.radio('Break ties',[False,True])
@@ -91,7 +91,7 @@ def svm_main():
                 random_state = st.radio('Random state',[None,'Custom'])
                 if random_state == 'Custom':
                     random_state = st.number_input('Custom random state',0,99,1,1)
-                
+
             st.markdown('For further information please refer to ths [link](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)')
 
         try:
@@ -101,7 +101,7 @@ def svm_main():
             clf = svm.SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, coef0=coef0,
                           shrinking=shrinking, probability=probability, tol=tol, class_weight=class_weight,
                           verbose=verbose, max_iter=max_iter, decision_function_shape=decision_function_shape,
-                          break_ties=break_ties, random_state=random_state) 
+                          break_ties=break_ties, random_state=random_state)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -113,7 +113,7 @@ def svm_main():
             precision = metrics.precision_score(y_test, y_pred)
             recall = metrics.recall_score(y_test, y_pred)
             f1 = metrics.f1_score(y_test, y_pred)
-            
+
             st.subheader('Metrics')
             col2_1, col2_2, col2_3, col2_4 = st.beta_columns(4)
 
