@@ -217,3 +217,9 @@ def lr_main(engine):
         url = 'https://raw.githubusercontent.com/mkhorasani/dummylearn_datasets/main/data.csv'
         csv = pd.read_csv(url)
         st.sidebar.markdown(download(csv,'sample_dataset'), unsafe_allow_html=True)
+
+    st.sidebar.markdown(' ')
+    st.sidebar.markdown('[Donate here](https://paypal.me/dummylearn)')
+    st.sidebar.markdown(
+        f'<div class="markdown-text-container stText" style="width: 698px;"><footer><p></p></footer><div style="font-size: 12px;">Machine Learning Classifier v1.5</div><div style="font-size: 12px;">www.DummyLearn.com</div></div>',
+        unsafe_allow_html=True)
