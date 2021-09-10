@@ -16,25 +16,7 @@ from streamlit.server.server import Server
 from sqlalchemy import Table, Column, String, MetaData
 from datetime import datetime
 import os
-
-def insert_row(session_id,engine):
-    if engine.execute("SELECT session_id FROM session_state WHERE session_id = '%s'" % (session_id)).fetchone() is None:
-            engine.execute("""INSERT INTO session_state (session_id) VALUES ('%s')""" % (session_id))
-
-def update_row(column,new_value,session_id,engine):
-    engine.execute("UPDATE session_state SET %s = '%s' WHERE session_id = '%s'" % (column,new_value,session_id))
-
-def get_session():
-    session_id = get_report_ctx().session_id
-    session_info = Server.get_current()._get_session_info(session_id)
-
-    if session_info is None:
-        raise RuntimeError("Couldn't get your Streamlit Session object.")
-
-    session_id = session_id.replace('-','_')
-    session_id = '_id_' + session_id
-
-    return session_info.session, session_id
+from Utils import *
 
 def confusion_matrix_plot(data,labels):
     z = data.tolist()[::-1]
@@ -52,31 +34,6 @@ def roc_plot(data):
     fig.update_layout(font_family="IBM Plex Sans")
 
     st.write(fig)
-
-def download(df,filename): # Downloading DataFrame
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()
-    href = (f'<a href="data:file/csv;base64,{b64}" download="%s.csv">Download csv file</a>' % (filename))
-    return href
-
-def file_upload(name):
-    uploaded_file = st.sidebar.file_uploader('%s' % (name),key='%s' % (name),accept_multiple_files=False)
-    content = False
-    if uploaded_file is not None:
-        try:
-            uploaded_df = pd.read_csv(uploaded_file)
-            content = True
-            return content, uploaded_df
-        except:
-            try:
-                uploaded_df = pd.read_excel(uploaded_file)
-                content = True
-                return content, uploaded_df
-            except:
-                st.error('Please ensure file is .csv or .xlsx format and/or reupload file')
-                return content, None
-    else:
-        return content, None
 
 def dt_viz(X,y,label_name,model,feature_cols,class_names):
     class_names = [str(x) for x in class_names]
@@ -184,6 +141,16 @@ def dt_main(engine):
                 st.info('Area Under Curve: **%s**' % (round(auc,3)))
             except:
                 pass
+
+            #Download hyperparameters
+            hyperparameters = {'criterion':[criterion], 'splitter':[splitter], 'max_depth':[max_depth],
+            'min_samples_split':[min_samples_split],'min_samples_leaf':[min_samples_leaf],
+            'min_weight_fraction_leaf':[min_weight_fraction_leaf],'max_features':[max_features],
+            'random_state':[random_state], 'max_leaf_nodes':[max_leaf_nodes],'min_impurity_decrease':[min_impurity_decrease],
+            'min_impurity_split':[min_impurity_split], 'class_weight':[class_weight],'ccp_alpha':[ccp_alpha]}
+
+            st.subheader('Download hyperparameters')
+            st.markdown(download(pd.DataFrame(hyperparameters),'DummyLearn.com - Decision Tree Classifier - Hyperparameters'), unsafe_allow_html=True)
 
             st.sidebar.subheader('Test Dataset')
             status_test, df_test = file_upload('Please upload a test dataset')
